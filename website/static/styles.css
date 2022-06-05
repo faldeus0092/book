@@ -1,0 +1,34 @@
+body{
+	margin: 0;
+	font-family: Inconsolata, monospace !important;
+	background: #000;
+	color: #fff;
+	text-align: center !important;
+	-webkit-text-size-adjust: 100%;	
+}
+.title{
+    box-sizing: border-box;
+	margin-top: 0.2em;
+	margin-bottom: 1em;
+}
+.card{
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+}
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.book-cover{
+    height: 300px;
+}
+
+@media screen and (min-width: 768px) {
+    #adv-search {
+        width: 700px;
+        margin: 0 auto;
+    }
+    .search-form{
+        min-width: 700px;
+    }
+}

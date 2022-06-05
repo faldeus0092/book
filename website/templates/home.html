@@ -1,0 +1,69 @@
+{% extends "base.html" %} {% block title %}CBT Jatim{% endblock %} {% block
+  content %}
+  <div class="title">
+    <h1 align="center"><b>Gramedia's Library of Books</b></h1>
+    <a type="button" class="btn btn-secondary" href="upload">Upload Book</a>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="input-group" id="adv-search">
+        <form method="POST" class="form-inline">
+          <div class="form-row">
+            <div class="col-md-4 col-sm-12">
+              <input type="text" class="form-control" placeholder="Insert title" name="title">
+            </div>
+            <div class="col">
+              <input type="text" class="form-control" placeholder="Insert author" name="author">
+            </div>
+            <div class="col-md-3 col-sm-12">
+              <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="genre">
+                <option value="0" selected="selected">Filter Genre...</option>
+                <option value="Fiction">Fiction</option>
+                <option value="Mystery">Mystery</option>
+                <option value="Thriller">Thriller</option>
+                <option value="Horror">Horror</option>
+                <option value="Historical">Historical</option>
+                <option value="Romance">Romance</option>
+                <option value="Western">Western</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Dystopian">Dystopian</option>
+              </select>
+            </div>
+            <div class="col-md-1 col-sm-12">
+              <button type="submit" value="Submit" class="btn btn-secondary">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <ul class="list-group list-group-flush" id="notes">
+      {% for result in results %}
+      <div class="card">
+        <li class="list-group-item">
+          <b>ISBN no #{{ result[2] }}</b>
+        </li>
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-3 book-cover" style="margin: auto;">
+              
+              <img src="{{ result[4] }}"+>
+            </div>
+            <div class="col-9" style="margin: auto;">
+              <h2><b>{{ result[0] }}</b></h2>
+              <p>Author: {{ result[1] }}</p>
+              <p>Genre: {{ result[3] }}</p>
+            </div>
+          </div>
+        </li>
+      </div>
+      {% endfor %}
+    </ul>
+  </div>
+  
+  {% endblock %}
+  
