@@ -46,17 +46,21 @@
       <div class="card">
         <li class="list-group-item">
           <b>ISBN no #{{ result[2] }}</b>
+          <button type="button" class="close" onClick="deleteBook({{ result[5] }})">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </li>
         <li class="list-group-item">
           <div class="row">
             <div class="col-3 book-cover" style="margin: auto;">
-              
               <img src="{{ result[4] }}"+>
             </div>
-            <div class="col-9" style="margin: auto;">
+          
+            <div class="col-md-9">
               <h2><b>{{ result[0] }}</b></h2>
               <p>Author: {{ result[1] }}</p>
               <p>Genre: {{ result[3] }}</p>
+              <p>ID Buku: {{ result[5] }}</p>
             </div>
           </div>
         </li>

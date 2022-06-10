@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, request, flash, redirect, url_for
+from flask import Blueprint, flash, render_template, jsonify, request, flash, redirect, url_for
 from .models import  Book, id_to_string
 from . import db
 import os
@@ -6,6 +6,7 @@ from .models import parseCSV
 from sqlalchemy import text
 import boto3
 import key_config as keys
+import json
 
 BUCKET_NAME='cc22book'
 
@@ -20,14 +21,15 @@ def home():
     title = request.form.get('title')
     author = request.form.get('author')
     if request.method == 'POST':
+        #no filter
         if genre=="0" and not title and not author:
             flash("Please enter search filter(s)", category='error')
-            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path` FROM `book`;')  
+            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path`, `book`.`id_buku`  FROM `book`;')  
             results = db.engine.execute(sql)
             return render_template("home.html", results = results)
         # search by genre
         elif not title and not author:
-            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path` FROM `book` WHERE `book`.`genre` LIKE \'%{genre}%\';') 
+            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path`, `book`.`id_buku` FROM `book` WHERE `book`.`genre` LIKE \'%{genre}%\';') 
             results = db.engine.execute(sql)
             if results.rowcount == 0:
                 flash("Not Found", category='error')
@@ -36,7 +38,7 @@ def home():
             return render_template("home.html", results = results)
         # search by title
         elif genre=="0" and not author:
-            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path` FROM `book` WHERE `book`.`judul` LIKE \'%{title}%\';') 
+            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path`, `book`.`id_buku` FROM `book` WHERE `book`.`judul` LIKE \'%{title}%\';') 
             results = db.engine.execute(sql)
             if results.rowcount == 0:
                 flash("Not Found", category='error')
@@ -45,7 +47,7 @@ def home():
             return render_template("home.html", results = results)
         # search by author
         elif genre=="0" and not title:
-            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path` FROM `book` WHERE `book`.`author` LIKE \'%{author}%\';') 
+            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path`, `book`.`id_buku` FROM `book` WHERE `book`.`author` LIKE \'%{author}%\';') 
             results = db.engine.execute(sql)
             if results.rowcount == 0:
                 flash("Not Found", category='error')
@@ -54,7 +56,7 @@ def home():
             return render_template("home.html", results = results)
         # search by genre & title
         elif not author and (title and genre != "0"):
-            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path` FROM `book` WHERE `book`.`genre` LIKE \'%{genre}%\' AND `book`.`judul` LIKE \'%{title}%\';') 
+            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path`, `book`.`id_buku` FROM `book` WHERE `book`.`genre` LIKE \'%{genre}%\' AND `book`.`judul` LIKE \'%{title}%\';') 
             results = db.engine.execute(sql)
             if results.rowcount == 0:
                 flash("Not Found", category='error')
@@ -63,7 +65,7 @@ def home():
             return render_template("home.html", results = results)
         # search by genre & author
         elif not title and (author and genre != "0"):
-            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path` FROM `book` WHERE `book`.`genre` LIKE \'%{genre}%\' AND `book`.`author` LIKE \'%{author}%\';') 
+            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path`, `book`.`id_buku` FROM `book` WHERE `book`.`genre` LIKE \'%{genre}%\' AND `book`.`author` LIKE \'%{author}%\';') 
             results = db.engine.execute(sql)
             if results.rowcount == 0:
                 flash("Not Found", category='error')
@@ -72,7 +74,7 @@ def home():
             return render_template("home.html", results = results)
         # search by title & author
         elif genre == "0" and (author and title):
-            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path` FROM `book` WHERE `book`.`judul` LIKE \'%{title}%\' AND `book`.`author` LIKE \'%{author}%\';') 
+            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path`, `book`.`id_buku` FROM `book` WHERE `book`.`judul` LIKE \'%{title}%\' AND `book`.`author` LIKE \'%{author}%\';') 
             results = db.engine.execute(sql)
             if results.rowcount == 0:
                 flash("Not Found", category='error')
@@ -81,7 +83,7 @@ def home():
             return render_template("home.html", results = results)
         # search by title & author
         elif genre != "0" and author and title:
-            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path` FROM `book` WHERE `book`.`judul` LIKE \'%{title}%\' AND `book`.`author` LIKE \'%{author}%\' AND `book`.`genre` LIKE \'%{genre}%\';') 
+            sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path`, `book`.`id_buku` FROM `book` WHERE `book`.`judul` LIKE \'%{title}%\' AND `book`.`author` LIKE \'%{author}%\' AND `book`.`genre` LIKE \'%{genre}%\';') 
             results = db.engine.execute(sql)
             if results.rowcount == 0:
                 flash("Not Found", category='error')
@@ -91,8 +93,7 @@ def home():
         else:
             flash("An error occured", category='error')
     else:
-        flash("No filter were assigned", category='success')
-        sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path` FROM `book`;')  
+        sql = text(f'Select `book`.`judul`, `book`.`author`, `book`.`isbn`, `book`.`genre`, `book`.`img_path`, `book`.`id_buku` FROM `book`;')  
         results = db.engine.execute(sql)
         return render_template("home.html", results = results)
     return render_template("home.html")
@@ -154,7 +155,7 @@ def upload():
                 updated_book.img_path = f"https://cc22book.s3.amazonaws.com/img/cover_{uploaded_book_id}.png"
                 db.session.commit()
                 
-                flash("Book uploaded successfully", category="succeess")
+                flash("Book uploaded successfully", category="success")
 
             except Exception as e:
                 return str(e)
@@ -178,3 +179,29 @@ def upload_file():
     # parse csv
     parseCSV(final_path, kota_id)
     return redirect(url_for('views.home'))
+
+@views.route('/delete-book', methods = ['POST'])
+def delete_book():
+    book = json.loads(request.data)
+    bookId = book['bookId']
+    book = Book.query.get(bookId)
+    if book:
+        # if note.user_id == current_user.id:
+        db.session.delete(book)
+        db.session.commit()
+
+        # format nama file
+        image_file_name_in_s3 = "cover_" + str(bookId) + ".png"
+        #delete di s3
+        s3 = boto3.client('s3', region_name="us-east-1",
+                    aws_access_key_id=keys.ACCESS_KEY_ID,
+                    aws_secret_access_key= keys.ACCESS_SECRET_KEY,
+                    aws_session_token=keys.AWS_SESSION_TOKEN
+                    )
+        s3.delete_object(
+            Bucket = BUCKET_NAME,
+            Key = f"img/{image_file_name_in_s3}"
+        )
+        flash("Book deleted successfully", category="success")
+        
+    return jsonify({})
