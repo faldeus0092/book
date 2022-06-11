@@ -190,6 +190,16 @@ def delete_book():
         db.session.delete(book)
         db.session.commit()
 
+        sql_1 = text(f'Select `id_buku` FROM `book` WHERE id_buku=(SELECT max(id_buku) FROM `book`);')  
+        res = db.engine.execute(sql_1)
+
+        a  = [x for x in res]
+
+        print(f"Book number {bookId} has deleted succesfully")
+
+        sql_2 = text(f'ALTER TABLE `book` AUTO_INCREMENT={a[0][0] + 1};')
+        db.engine.execute(sql_2)
+
         # format nama file
         image_file_name_in_s3 = "cover_" + str(bookId) + ".png"
         #delete di s3
