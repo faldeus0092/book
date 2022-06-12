@@ -165,20 +165,52 @@ def upload():
                 # return redirect("/")
     return render_template("upload.html")
 
-@views.route('/upload-file', methods=['POST'])
-def upload_file():
-    
-    # get the uploaded file
-    files = request.files['file']
-    final_path = os.path.join(ROOT_FOLDER,files.filename)
-    files.save(final_path)
+@views.route('/update-book', methods=['POST', 'GET'])
+def update():
+    if request.method == 'GET':
+        bookId = request.args.get('id')
+        # print(bookId)
+        book = Book.query.get(bookId)
+        # print(type(book))
+        if book:
+            # print(book.judul)
+            return render_template("update.html", results = book)
+            # return render_template("upload.html")
+        else:
+            print('False GET')
 
-    # get id_kota
-    kota_id = files.filename.strip("id_kota_.csv")
-    
-    # parse csv
-    parseCSV(final_path, kota_id)
-    return redirect(url_for('views.home'))
+    if request.method == 'POST':
+        book_id = request.form.get('book_id')
+        judul = request.form.get('title') #Asdf
+        author = request.form.get('author') # Sherry Bryd
+        genre = request.form.get('genre')
+        isbn = request.form.get('isbn')
+
+        uploaded_book = Book.query.filter_by(judul=judul, author=author).first()      
+        if uploaded_book:
+            return redirect(request.url)
+            # NgecekadaJudulApaNggak = Book.query.filter_by(judul=judul, author=author).first()
+            # if NgecekadaJudulApaNggak:
+            #     if NgecekadaJudulApaNggak.id_buku != uploaded_book_id:
+            #         flash('Book already exist', category='error')
+            #         return redirect(request.url)
+
+        try:
+            result = Book.query.filter_by(id_buku=book_id).first()
+            if not result:
+                return redirect(request.url)
+            result.judul = judul
+            result.author = author
+            result.isbn = isbn
+            result.genre = genre
+            # new_book = Book(judul = judul, author = author, isbn = isbn, genre = genre)
+            # db.session.update(new_book, book_id)
+            db.session.commit()
+
+        except Exception as e:
+                return str(e)
+                # return redirect("/")
+    return redirect("/")
 
 @views.route('/delete-book', methods = ['POST'])
 def delete_book():

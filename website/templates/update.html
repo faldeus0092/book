@@ -1,0 +1,68 @@
+{% extends "base.html" %} {% block title %}Update{% endblock %} {% block
+    content %}
+    <div class="title">
+        <h1 align="center"><b>Update Buku: {{ results.judul }}</b></h1>
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="form-group"; style="display: none">
+        <label for="book_id">Book ID</label>
+        <input
+          value="{{ results.id_buku }}"
+          type="text"
+          class="form-control"
+          id="book_id"
+          name="book_id"
+        />
+      </div>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          value="{{ results.judul }}"
+          type="text"
+          class="form-control"
+          id="title"
+          name="title"
+        />
+      </div>
+      <div class="form-group">
+        <label for="author">Author</label>
+        <input
+          value="{{ results.author }}"
+          type="text"
+          class="form-control"
+          id="author"
+          name="author"
+          placeholder="Enter author name..."
+        />
+      </div>
+      <div class="form-group">
+        <label for="genre">GENRE</label>
+        <select class="custom-select mr-sm-2" id="genre" name="genre">
+          <option value="Fiction" {% if results.genre == 'Fiction' %} selected="selected" {% endif %}>Fiction</option>
+          <option value="Mystery" {% if results.genre == 'Mystery' %} selected="selected" {% endif %}>Mystery</option>
+          <option value="Thriller" {% if results.genre == 'Thriller' %} selected="selected" {% endif %}>Thriller</option>
+          <option value="Horror"  {% if results.genre == 'Horror' %} selected="selected" {% endif %}>Horror</option>
+          <option value="Historical" {% if results.genre == 'Historical' %} selected="selected" {% endif %}>Historical</option>
+          <option value="Romance" {% if results.genre == 'Romance' %} selected="selected" {% endif %}>Romance</option>
+          <option value="Western" {% if results.genre == 'Western' %} selected="selected" {% endif %}>Western</option>
+          <option value="Sci-Fi" {% if results.genre == 'Sci-Fi' %} selected="selected" {% endif %}>Sci-Fi</option>
+          <option value="Fantasy" {% if results.genre == 'Fantasy' %} selected="selected" {% endif %}>Fantasy</option>
+          <option value="Dystopian" {% if results.genre == 'Dystopia' %} selected="selected" {% endif %}>Dystopian</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="isbn">ISBN</label>
+        <input
+          value="{{ results.isbn }}"
+          type="text"
+          class="form-control"
+          id="isbn"
+          name="isbn"
+          placeholder="Enter ISBN..."
+        />
+      </div>
+      <br />
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {% endblock %}
+    

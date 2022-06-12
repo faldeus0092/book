@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}CBT Jatim{% endblock %} {% block
+{% extends "base.html" %} {% block title %}Gramedia{% endblock %} {% block
   content %}
   <div class="title">
     <h1 align="center"><b>Gramedia's Library of Books</b></h1>
@@ -49,6 +49,9 @@
           <button type="button" class="close" onClick="deleteBook({{ result[5] }})">
             <span aria-hidden="true">&times;</span>
           </button>
+          <!-- <a type="button" class="primary" href="/update-book?id={{ result[5] }}">
+            <span aria-hidden="true">&times;</span>
+          </a> -->
         </li>
         <li class="list-group-item">
           <div class="row">
@@ -57,7 +60,7 @@
             </div>
           
             <div class="col-md-9">
-              <h2><b>{{ result[0] }}</b></h2>
+              <h2><b><a href="/update-book?id={{ result[5] }}">{{ result[0] }}</a></b></h2>
               <p>Author: {{ result[1] }}</p>
               <p>Genre: {{ result[3] }}</p>
               <p>ID Buku: {{ result[5] }}</p>
